@@ -1,98 +1,447 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🌱 EcoShop E-commerce Platform - Backend - Equipo 50
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> Plataforma de e-commerce sostenible que integra indicadores de impacto ambiental, educación sobre consumo responsable y trazabilidad de productos ecológicos.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📋 Tabla de Contenidos
 
-## Description
+- [Descripción del Proyecto](#descripción-del-proyecto)
+- [Objetivo](#objetivo)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Requisitos Previos](#requisitos-previos)
+- [Instalación](#instalación)
+- [Scripts Disponibles](#scripts-disponibles)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Requerimientos Funcionales](#requerimientos-funcionales)
+- [Flujo de Trabajo con Git](#flujo-de-trabajo-con-git)
+- [Estándares de Código](#estándares-de-código)
+- [Variables de Entorno](#variables-de-entorno)
+- [Contribuciones](#contribuciones)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 📌 Descripción del Proyecto
+
+**EcoShop** es una plataforma de e-commerce diseñada para marcas sostenibles que buscan no solo vender productos, sino también medir, visualizar y comunicar el impacto ambiental de cada compra.
+
+### Sector
+E-commerce de Sostenibilidad
+
+### Necesidad del Cliente
+Marcas sostenibles requieren una tienda online ecológica con un enfoque educativo y transparente que fortalezca la confianza de los consumidores y promueva decisiones de compra responsables.
+
+---
+
+## 🎯 Objetivo
+
+Desarrollar una plataforma web de comercio electrónico sostenible que integre:
+
+- ✅ Indicadores de impacto ambiental por producto (huella de carbono, materiales, origen, transporte)
+- ✅ Trazabilidad completa de productos
+- ✅ Experiencia de usuario fluida y moderna
+- ✅ Panel administrativo para marcas
+- ✅ Integración con pasarelas de pago seguras
+- ✅ Reportes visuales de impacto ecológico
+
+---
+
+## 🛠️ Stack Tecnológico
+
+### Backend Framework
+- **NestJS** (^11.0.1) - Framework TypeScript progresivo
+- **TypeScript** (^5.7.3) - Tipado estático
+
+### Base de Datos
+- **MongoDB** - Base de datos NoSQL
+- **Mongoose** (^8.19.3) - ODM para MongoDB
+
+### Autenticación
+- **JWT (@nestjs/jwt)** (^11.0.1) - JSON Web Tokens
+- **Passport** (^0.7.0) - Autenticación flexible
+- **Bcrypt** (^6.0.0) - Encriptación de contraseñas
+- **Passport-JWT** (^4.0.1) - Estrategia JWT
+
+### Validación
+- **class-validator** (^0.14.2) - Validación de DTOs
+- **class-transformer** (^0.5.1) - Transformación de objetos
+
+### Herramientas de Desarrollo
+- **ESLint** + **Prettier** - Linting y formateado
+- **Jest** (^30.0.0) - Testing
+- **Supertest** (^7.0.0) - Testing de HTTP
+- **ts-jest** - Soporte TypeScript en Jest
+
+### Configuración
+- **@nestjs/config** (^4.0.2) - Gestión de variables de entorno
+
+---
+
+## 📦 Requisitos Previos
+
+- **Node.js** >= 18.x
+- **pnpm** >= 8.x (recomendado) o **npm** >= 9.x
+- **MongoDB** (local o Atlas)
+- **Git** para control de versiones
+
+---
+
+## 🚀 Instalación
+
+### 1. Clonar el repositorio
 
 ```bash
-$ pnpm install
+git clone <repository-url>
+cd ecommerce
 ```
 
-## Compile and run the project
+### 2. Instalar dependencias
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm install
+# o
+npm install
 ```
 
-## Run tests
+### 3. Configurar variables de entorno
+
+Crear archivo `.env` en la raíz del proyecto:
+
+```env
+# Base de Datos
+MONGO_URI=mongodb://localhost:27017/ecoshop
+# o para MongoDB Atlas:
+# MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/ecoshop
+
+# JWT
+JWT_SECRET=your_jwt_secret_key_here
+
+# Puerto
+PORT=3000
+
+# Entorno
+NODE_ENV=development
+```
+
+### 4. Iniciar el servidor
 
 ```bash
-# unit tests
-$ pnpm run test
+# Desarrollo (con hot reload)
+pnpm start:dev
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+# Producción
+pnpm start
 ```
 
-## Deployment
+Por defecto, el servidor estará disponible en `http://localhost:3000`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 📝 Scripts Disponibles
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+# Desarrollo
+pnpm start              # Inicia el servidor
+pnpm start:dev         # Inicia en modo desarrollo con watch
+pnpm start:debug       # Inicia en modo debug
+pnpm start:prod        # Inicia versión compilada
+
+# Compilación
+pnpm build             # Compila el proyecto a ./dist
+
+# Testing
+pnpm test              # Ejecuta tests unitarios
+pnpm test:watch       # Tests en modo watch
+pnpm test:cov         # Tests con cobertura
+pnpm test:e2e         # Tests end-to-end
+pnpm test:debug       # Tests en modo debug
+
+# Calidad de Código
+pnpm lint              # Ejecuta ESLint y corrige
+pnpm format            # Formatea código con Prettier
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 📁 Estructura del Proyecto
 
-Check out a few resources that may come in handy when working with NestJS:
+```
+src/
+├── auth/                      # Módulo de autenticación
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   ├── auth.module.ts
+│   └── *.spec.ts             # Tests unitarios
+│
+├── users/                     # Módulo de usuarios
+│   ├── users.service.ts
+│   ├── users.module.ts
+│   └── *.spec.ts
+│
+├── common/                    # Utilidades compartidas
+│   ├── middlewares/           # Middlewares globales
+│   └── utils/                 # Funciones auxiliares
+│       └── hash.utils.ts
+│
+├── app.controller.ts          # Controlador raíz
+├── app.service.ts             # Servicio raíz
+├── app.module.ts              # Módulo raíz
+└── main.ts                    # Punto de entrada
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+test/                          # Tests E2E
+├── app.e2e-spec.ts
+└── jest-e2e.json
 
-## Support
+dist/                          # Compilado (generado)
+coverage/                      # Cobertura de tests (generado)
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## 🔧 Requerimientos Funcionales
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 1. Autenticación y Usuarios
+- [ ] Registro de usuarios (clientes y marcas)
+- [ ] Login con JWT
+- [ ] Validación de email
+- [ ] Recuperación de contraseña
+- [ ] Refresh tokens
 
-## License
+### 2. Catálogo de Productos
+- [ ] CRUD de productos
+- [ ] Filtrado por sostenibilidad
+- [ ] Búsqueda avanzada
+- [ ] Datos ambientales por producto
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### 3. Carrito y Checkout
+- [ ] Gestión del carrito
+- [ ] Cálculo de huella de carbono por pedido
+- [ ] Proceso de checkout
+- [ ] Integración con pasarelas de pago
+
+### 4. Panel de Administración
+- [ ] Gestión de inventario
+- [ ] Métricas de vendedor
+- [ ] Reportes de impacto ambiental
+- [ ] Gestión de certificaciones
+
+### 5. Indicadores de Impacto Ambiental
+- [ ] Cálculo de huella de carbono
+- [ ] Eco-badges y niveles de sostenibilidad
+- [ ] Reportes visuales
+- [ ] Comparativa entre productos
+
+### 6. Funcionalidades Bonus
+- [ ] Eco-wallet (puntos verdes)
+- [ ] Modo comparativo de impacto
+- [ ] Contenido educativo sobre consumo responsable
+
+---
+
+## 🌿 Flujo de Trabajo con Git
+
+### Estrategia de Ramas
+
+```
+main (producción)
+  ↑
+develop (pre-producción)
+  ↑
+feature/* (nuevas funcionalidades)
+bugfix/* (correcciones de bugs)
+hotfix/* (urgentes en producción)
+```
+
+### Convenciones de Rama
+
+```bash
+# Nuevas funcionalidades
+git checkout -b feature/nombre-funcionalidad
+
+# Correcciones
+git checkout -b bugfix/descripcion-bug
+
+# Correcciones urgentes en producción
+git checkout -b hotfix/descripcion-urgente
+
+# Ejemplos
+git checkout -b feature/carrito-productos
+git checkout -b bugfix/validacion-email
+git checkout -b hotfix/seguridad-jwt
+```
+
+### Flujo de Trabajo Típico
+
+1. **Crear rama desde `develop`**
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git checkout -b feature/mi-funcionalidad
+   ```
+
+2. **Desarrollar y hacer commits**
+   ```bash
+   git add .
+   git commit -m "feat: agregar funcionalidad X"
+   ```
+
+3. **Push a la rama**
+   ```bash
+   git push origin feature/mi-funcionalidad
+   ```
+
+4. **Crear Pull Request** hacia `develop`
+   - Asignar reviewers
+   - Esperar aprobación
+
+5. **Mergear a `develop`**
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git merge feature/mi-funcionalidad
+   git push origin develop
+   ```
+
+6. **Eliminar rama local y remota**
+   ```bash
+   git branch -d feature/mi-funcionalidad
+   git push origin --delete feature/mi-funcionalidad
+   ```
+
+### Mensajes de Commit
+
+Usar formato convencional:
+
+```
+<tipo>(<alcance>): <descripción>
+
+<cuerpo opcional>
+
+<pie de página opcional>
+```
+
+**Tipos:**
+- `feat:` Nueva funcionalidad
+- `fix:` Corrección de bug
+- `docs:` Cambios en documentación
+- `style:` Cambios de formato (no funcionalidad)
+- `refactor:` Refactorización de código
+- `perf:` Mejoras de rendimiento
+- `test:` Agregación o modificación de tests
+- `chore:` Cambios en build, dependencies, etc.
+
+**Ejemplos:**
+```
+feat(auth): agregar autenticación con JWT
+fix(products): corregir cálculo de huella de carbono
+docs(readme): actualizar instrucciones de instalación
+```
+
+---
+
+## 📏 Estándares de Código
+
+### Convenciones
+
+- **Lenguaje:** TypeScript estricto
+- **Formato:** Prettier con ancho 80 caracteres
+- **Linting:** ESLint con reglas de NestJS
+
+### Estructura de Módulos
+
+```typescript
+// module.ts
+import { Module } from '@nestjs/common';
+import { MyController } from './my.controller';
+import { MyService } from './my.service';
+
+@Module({
+  controllers: [MyController],
+  providers: [MyService],
+  exports: [MyService],
+})
+export class MyModule {}
+```
+
+### DTOs (Data Transfer Objects)
+
+```typescript
+import { IsEmail, IsString } from 'class-validator';
+
+export class CreateUserDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
+```
+
+### Servicios
+
+```typescript
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class MyService {
+  constructor() {}
+
+  // implementar métodos
+}
+```
+
+### Tests
+
+- Usar Jest con `describe` y `it`
+- Un archivo `.spec.ts` por clase
+- Mínimo 70% de cobertura
+
+---
+
+## 🔐 Variables de Entorno
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `MONGO_URI` | Conexión a MongoDB | `mongodb://localhost:27017/ecoshop` |
+| `JWT_SECRET` | Clave secreta JWT | `your_secret_key_min_32_chars` |
+| `EXPIRES_IN` | Expiración del token | `24h`, `7d`, `60s` |
+| `PORT` | Puerto del servidor | `3000` |
+| `NODE_ENV` | Entorno | `development`, `production` |
+
+---
+
+## 🤝 Contribuciones
+
+### Antes de hacer Push
+
+1. **Ejecutar tests**
+   ```bash
+   pnpm test
+   ```
+
+2. **Verificar linting**
+   ```bash
+   pnpm lint
+   ```
+
+3. **Formatear código**
+   ```bash
+   pnpm format
+   ```
+
+### Checklist de PR
+
+- [ ] Tests pasando (`pnpm test`)
+- [ ] Linting correcto (`pnpm lint`)
+- [ ] Código formateado (`pnpm format`)
+- [ ] Documentación actualizada
+- [ ] Mensajes de commit claros
+- [ ] Sin console.log en código
+
+---
+
+## 📞 Contacto y Soporte
+
+Para dudas o problemas, comunícate con el equipo de desarrollo.
+
+---
+
+**Última actualización:** Noviembre 2025 | **Versión:** 0.0.1
