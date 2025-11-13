@@ -14,7 +14,12 @@ export class AuthService {
   ) {}
 
   //  Register Logic
-  async register(data: { email: string; password: string; name?: string }) {
+  async register(data: {
+    email: string;
+    password: string;
+    role?: 'customer' | 'brand' | 'admin';
+    name?: string;
+  }) {
     // Comprobar si existe el usuario
     const existingUser = await this.usersService.findByEmail(data.email);
     if (existingUser) {
@@ -29,7 +34,7 @@ export class AuthService {
       email: data.email,
       password: hashedPassword,
       name: data.name,
-      role: 'customer',
+      role: data.role || 'customer',
     });
 
     // Generar token
