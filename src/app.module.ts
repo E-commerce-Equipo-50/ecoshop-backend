@@ -5,22 +5,18 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { HealthController } from './check/health/health.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
-    MongooseModule.forRoot(process.env.MONGO_DB_URI ?? ""),
+    MongooseModule.forRoot(process.env.MONGO_DB_URI ?? ''),
     AuthModule,
-    UsersModule
+    UsersModule,
   ],
-  controllers: [
-    AppController
-  ],
-  providers: [
-    AppService
-
-  ],
+  controllers: [AppController, HealthController],
+  providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
