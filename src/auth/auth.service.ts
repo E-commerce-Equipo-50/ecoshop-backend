@@ -6,6 +6,9 @@ import {
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { hashPassword, verifyPassword } from 'src/common/utils/hash.utils';
+import { RegisterAuthDto, UserRole } from './dto/register-auth.dto';
+import { LoginAuthDto } from './dto/login-auth.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -13,20 +16,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  //  Register Logic
-  async register(data: {
-    email: string;
-    password: string;
-    role?: 'customer' | 'brand' | 'admin';
-    name?: string;
-  }) {
+  // Register logic
+  async register(data: RegisterAuthDto) {
     // Comprobar si existe el usuario
     const existingUser = await this.usersService.findByEmail(data.email);
     if (existingUser) {
       throw new ConflictException('Email already in use');
     }
 
-    // Hash de la contraseña
+    // Hash de la contrasena
     const hashedPassword = await hashPassword(data.password);
 
     // Crear el usuario en la bd
@@ -34,7 +32,7 @@ export class AuthService {
       email: data.email,
       password: hashedPassword,
       name: data.name,
-      role: data.role || 'customer',
+      role: (data.role as UserRole) ?? 'customer',
     });
 
     // Generar token
@@ -58,14 +56,14 @@ export class AuthService {
   }
 
   // Login logic
-  async login(data: { email: string; password: string }) {
+  async login(data: LoginAuthDto) {
     // Buscar usuario
     const user = await this.usersService.findByEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Verificar la contraseña
+    // Verificar la contrasena
     const validPassword = await verifyPassword(data.password, user.password);
     if (!validPassword) {
       throw new UnauthorizedException('Invalid credentials');
