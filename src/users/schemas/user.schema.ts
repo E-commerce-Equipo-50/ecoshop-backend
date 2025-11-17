@@ -9,8 +9,8 @@ export class User extends Document {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ default: 'customer' })
-  role: 'customer' | 'brand' | 'admin';
+  @Prop({ default: 'client', enum: ['client', 'admin'] })
+  role: 'client' | 'admin';
 
   @Prop()
   name?: string;

@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-const USER_ROLES = ['customer', 'brand', 'admin'] as const;
+const USER_ROLES = ['admin', 'client'] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];
 

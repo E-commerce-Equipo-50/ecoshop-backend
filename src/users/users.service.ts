@@ -11,7 +11,7 @@ export class UsersService {
     email: string;
     password: string;
     name?: string;
-    role?: 'customer' | 'brand' | 'admin';
+    role?: 'client' | 'admin';
   }): Promise<User> {
     const user = new this.userModel(date);
     return user.save();

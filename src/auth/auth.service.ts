@@ -32,7 +32,7 @@ export class AuthService {
       email: data.email,
       password: hashedPassword,
       name: data.name,
-      role: (data.role as UserRole) ?? 'customer',
+      role: (data.role as UserRole) ?? 'client',
     });
 
     // Generar token
