@@ -25,14 +25,16 @@ async function bootstrap() {
     optionsSuccessStatus: 200,
   });
 
+  const swaggerConf = configService.get('swagger');
   const config = new DocumentBuilder()
-    .setTitle('EcoShop API')
-    .setDescription('API de e-commerce sostenible')
-    .setVersion('1.0')
+    .setTitle(swaggerConf.title)
+    .setDescription(swaggerConf.description)
+    .setVersion(swaggerConf.version)
     .addBearerAuth()
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, documentFactory);
+  
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(swaggerConf.path, app, document, swaggerConf.options);
 
   const port = configService.get<number>('app.port') || 3000;
   await app.listen(port);
