@@ -11,7 +11,7 @@ export class UsersService {
     email: string;
     password: string;
     name?: string;
-    role?: 'customer' | 'brand' | 'admin';
+    role?: 'client' | 'admin';
   }): Promise<User> {
     const user = new this.userModel(date);
     return user.save();
@@ -19,5 +19,9 @@ export class UsersService {
 
   async findByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
+  }
+
+  async findById(id: string): Promise<User | null> {
+    return this.userModel.findById(id).exec();
   }
 }
