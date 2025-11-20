@@ -26,5 +26,10 @@ export default registerAs('swagger', () => ({
       .swagger-ui .information-container { display: block; }
       .swagger-ui .scheme-container { display: none; }
     `,
+    customCssUrl: 'https://unpkg.com/swagger-ui-dist/swagger-ui.css',
+    customJs: [
+      'https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js',
+      'https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js',
+    ],
   },
 }));
