@@ -1,28 +1,37 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { SellersModule } from './sellers/sellers.module';
+import { CustomersModule } from './customers/customers.module';
 import { HealthController } from './check/health/health.controller';
-import configurations from './config';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: configurations,
+      isGlobal: true,
     }),
-    MongooseModule.forRootAsync({
-      inject: [ConfigService],
+    JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('database.uri'),
+        global: true,
+        secret: configService.get<string>('JWT_SECRET') || 'jwt_default_secret',
+        signOptions: { expiresIn: '24h' },
       }),
+      inject: [ConfigService],
     }),
     AuthModule,
-    UsersModule,
+    // Modulo para flujo de SELLER (marcas)
+    SellersModule,
+    CustomersModule,
+    ProductModule,
   ],
   controllers: [HealthController],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
+
+console.log('MONGODB_URI:', process.env.MONGO_DB_URI);
