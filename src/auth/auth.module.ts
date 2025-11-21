@@ -22,6 +22,7 @@ import { RolesGuard } from './guards/roles.guard';
         secret: configService.get<string>('JWT_SECRET') ?? 'jwt_default_secret',
         signOptions: { expiresIn: '24h' },
       }),
+      inject: [ConfigService],
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     CustomersModule,
