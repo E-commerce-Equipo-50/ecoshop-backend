@@ -5,7 +5,8 @@ import {
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from 'src/users/users.service';
+import { CustomersService } from 'src/customers/customers.service';
+import { SellersService } from 'src/sellers/sellers.service';
 
 interface JwtPayload {
   sub: string;
@@ -17,7 +18,8 @@ interface JwtPayload {
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly usersService: UsersService,
+    private readonly customersService: CustomersService,
+    private readonly sellersService: SellersService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -28,7 +30,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.usersService.findById(payload.sub);
+    let user: any = null;
+    if (payload.role === 'seller') {
+      user = await this.sellersService.findById(payload.sub);
+    } else {
+      user = await this.customersService.findById(payload.sub);
+    }
+
     if (!user) {
       throw new UnauthorizedException('User no longer exists');
     }
@@ -37,7 +45,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       id: user._id?.toString(),
       email: user.email,
       role: user.role,
-      name: user.name,
+      name: (user as any).name ?? (user as any).brandName ?? null,
     };
   }
 }
