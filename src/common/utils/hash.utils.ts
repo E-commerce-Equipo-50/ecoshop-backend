@@ -14,12 +14,3 @@ export const verifyPassword = async (
 ): Promise<boolean> => {
   return await bcrypt.compare(password, hash);
 };
-
-const myPlaintextPassword = 's0//P4$$w0rD';
-const someOtherPlaintextPassword = 'not_bacon';
-// example usage
-const hash = bcrypt.hashSync(myPlaintextPassword, SALT_ROUNDS);
-
-// Load hash from your password DB.
-bcrypt.compareSync(myPlaintextPassword, hash); // true
-bcrypt.compareSync(someOtherPlaintextPassword, hash); // false
