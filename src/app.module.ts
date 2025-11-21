@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -14,6 +12,7 @@ import { ImpactMetricModule } from './impact_metric/impact-metric.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: '.env',
       isGlobal: true,
     }),
@@ -25,7 +24,6 @@ import { ImpactMetricModule } from './impact_metric/impact-metric.module';
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forRoot(process.env.MONGO_DB_URI ?? ''),
     AuthModule,
     // Modulo para flujo de SELLER (marcas)
     SellersModule,
@@ -33,8 +31,8 @@ import { ImpactMetricModule } from './impact_metric/impact-metric.module';
     ProductModule,
     ImpactMetricModule,
   ],
-  controllers: [AppController, HealthController],
-  providers: [AppService],
+  controllers: [HealthController],
+  providers: [],
 })
 export class AppModule {}
 
