@@ -3,7 +3,7 @@ import {
   ConflictException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { CustomersService } from 'src/customers/customers.service';
 import { JwtService } from '@nestjs/jwt';
 import { hashPassword, verifyPassword } from 'src/common/utils/hash.utils';
 import { RegisterAuthDto, UserRole } from './dto/register-auth.dto';
@@ -12,7 +12,7 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: CustomersService,
     private readonly jwtService: JwtService,
   ) {}
 
