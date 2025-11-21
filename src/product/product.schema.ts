@@ -3,14 +3,6 @@ import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Product extends Document {
-  @Prop({
-    type: String,
-    unique: true,
-    required: true,
-    default: () => new Types.ObjectId().toString(),
-  })
-  productId: string;
-
   // Marca (nombre comercial del seller)
   @Prop({ required: true, trim: true, uppercase: true })
   brand: string;

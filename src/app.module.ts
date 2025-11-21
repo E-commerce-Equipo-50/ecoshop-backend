@@ -7,6 +7,7 @@ import { SellersModule } from './sellers/sellers.module';
 import { CustomersModule } from './customers/customers.module';
 import { HealthController } from './check/health/health.controller';
 import { ProductModule } from './product/product.module';
+import { ImpactMetricModule } from './impact_metric/impact-metric.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProductModule } from './product/product.module';
     SellersModule,
     CustomersModule,
     ProductModule,
+    ImpactMetricModule,
   ],
   controllers: [HealthController],
   providers: [],
