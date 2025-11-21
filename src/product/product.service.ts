@@ -15,7 +15,6 @@ export class ProductService {
     dto: CreateProductDto,
   ): Promise<Product> {
     const product = new this.productModel({
-      productId: new Types.ObjectId().toString(),
       ...dto,
       seller: new Types.ObjectId(sellerId),
       isActive: dto.isActive ?? true,
@@ -32,5 +31,9 @@ export class ProductService {
     return this.productModel
       .find({ seller: new Types.ObjectId(sellerId) })
       .exec();
+  }
+
+  async findById(id: string): Promise<Product | null> {
+    return this.productModel.findById(id).exec();
   }
 }

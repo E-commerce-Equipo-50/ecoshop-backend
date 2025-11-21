@@ -31,7 +31,6 @@ export class ProductController {
       message: 'Product created successfully',
       product: {
         id: created._id,
-        productId: created.productId,
         brand: created.brand,
         name: created.name,
         price: created.price,
