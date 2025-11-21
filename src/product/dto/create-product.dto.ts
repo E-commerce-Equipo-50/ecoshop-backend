@@ -1,6 +1,28 @@
-import { IsBoolean, IsNumber, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+  MinLength,
+  IsUrl,
+  Matches,
+} from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateProductDto {
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim().toUpperCase() : value,
+  )
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
+  @Matches(/^[A-Z0-9\s\-]+$/, {
+    message: 'brand must be uppercase and can include letters, numbers, spaces, or hyphens',
+  })
+  brand: string;
+
   @IsString()
   @MinLength(3)
   @MaxLength(120)
@@ -14,6 +36,37 @@ export class CreateProductDto {
   @IsNumber()
   @Min(0)
   price: number;
+
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim().toUpperCase() : value,
+  )
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  @Matches(/^[A-Z0-9\s\-]+$/, {
+    message: 'category must be uppercase and can include letters, numbers, spaces, or hyphens',
+  })
+  category?: string;
+
+  @IsOptional()
+  @IsUrl()
+  @MaxLength(300)
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  stock?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  originCountry?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  materials?: string;
 
   @IsOptional()
   @IsBoolean()

@@ -15,9 +15,11 @@ export class ProductService {
     dto: CreateProductDto,
   ): Promise<Product> {
     const product = new this.productModel({
+      productId: new Types.ObjectId().toString(),
       ...dto,
       seller: new Types.ObjectId(sellerId),
       isActive: dto.isActive ?? true,
+      stock: dto.stock ?? 0,
     });
     return product.save();
   }
