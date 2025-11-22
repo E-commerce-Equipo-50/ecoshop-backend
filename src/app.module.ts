@@ -10,6 +10,7 @@ import { ProductModule } from './product/product.module';
 import { ImpactMetricModule } from './impact_metric/impact-metric.module';
 import { CertificationModule } from './certification/certification.module';
 import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CartModule } from './cart/cart.module';
     ImpactMetricModule,
     CertificationModule,
     CartModule,
+    OrderModule,
   ],
   controllers: [HealthController],
   providers: [],
