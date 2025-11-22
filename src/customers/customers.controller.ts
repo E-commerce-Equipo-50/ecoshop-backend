@@ -4,12 +4,14 @@ import { RegisterAuthDto } from 'src/auth/dto/register-auth.dto';
 import { LoginAuthDto } from 'src/auth/dto/login-auth.dto';
 import { hashPassword, verifyPassword } from 'src/common/utils/hash.utils';
 import { JwtService } from '@nestjs/jwt';
+import { CartService } from 'src/cart/cart.service';
 
 @Controller('cliente')
 export class CustomersController {
   constructor(
     private readonly customersService: CustomersService,
     private readonly jwtService: JwtService,
+    private readonly cartService: CartService,
   ) {}
 
   @Post('registro')
@@ -27,6 +29,9 @@ export class CustomersController {
       name: body.name,
       role: 'client',
     });
+
+    const customerId = String(user._id);
+    await this.cartService.ensureActiveCart(customerId);
 
     const payload = { sub: user._id, email: user.email, role: 'client' };
     const accessToken = await this.jwtService.signAsync(payload);
@@ -55,6 +60,9 @@ export class CustomersController {
     if (!valid) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    const customerId = String(user._id);
+    await this.cartService.ensureActiveCart(customerId);
 
     const payload = { sub: user._id, email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);

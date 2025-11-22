@@ -26,15 +26,17 @@ async function bootstrap() {
   });
 
   const swaggerConf = configService.get('swagger');
-  const config = new DocumentBuilder()
-    .setTitle(swaggerConf.title)
-    .setDescription(swaggerConf.description)
-    .setVersion(swaggerConf.version)
-    .addBearerAuth()
-    .build();
-  
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(swaggerConf.path, app, document, swaggerConf.options);
+  if (swaggerConf) {
+    const config = new DocumentBuilder()
+      .setTitle(swaggerConf.title)
+      .setDescription(swaggerConf.description)
+      .setVersion(swaggerConf.version)
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup(swaggerConf.path, app, document, swaggerConf.options);
+  }
 
   const port = configService.get<number>('app.port') || 3000;
   await app.listen(port);

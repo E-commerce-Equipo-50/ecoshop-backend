@@ -1,0 +1,46 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { CertificationService } from './certification.service';
+import { CreateCertificationDto } from './dto/create-certification.dto';
+
+@Controller('certificaciones')
+export class CertificationController {
+  constructor(private readonly certificationService: CertificationService) {}
+
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('seller')
+  async create(
+    @Body() body: CreateCertificationDto,
+    @Request() req: { user: { id: string } },
+  ) {
+    const cert = await this.certificationService.create(req.user.id, body);
+    return {
+      message: 'Certification created',
+      certification: {
+        id: cert._id,
+        product: cert.product,
+        type: cert.type,
+        iconUrl: cert.iconUrl,
+        createdAt: cert.createdAt,
+      },
+    };
+  }
+
+  @Get(':productId')
+  async listByProduct(@Param('productId') productId: string) {
+    const certifications =
+      await this.certificationService.listByProduct(productId);
+    return { certifications };
+  }
+}

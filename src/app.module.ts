@@ -8,14 +8,17 @@ import { CustomersModule } from './customers/customers.module';
 import { HealthController } from './check/health/health.controller';
 import { ProductModule } from './product/product.module';
 import { ImpactMetricModule } from './impact_metric/impact-metric.module';
+import { CertificationModule } from './certification/certification.module';
+import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      isGlobal: true,
     }),
+    MongooseModule.forRoot(process.env.MONGO_DB_URI ?? ''),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         global: true,
@@ -30,6 +33,9 @@ import { ImpactMetricModule } from './impact_metric/impact-metric.module';
     CustomersModule,
     ProductModule,
     ImpactMetricModule,
+    CertificationModule,
+    CartModule,
+    OrderModule,
   ],
   controllers: [HealthController],
   providers: [],
