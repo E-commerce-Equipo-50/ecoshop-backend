@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ImpactMetric } from './impact-metric.schema';
 import { CreateImpactMetricDto } from './dto/create-impact-metric.dto';
-import { ProductService } from 'src/product/product.service';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class ImpactMetricService {

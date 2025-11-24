@@ -5,8 +5,8 @@ import {
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { CustomersService } from 'src/customers/customers.service';
-import { SellersService } from 'src/sellers/sellers.service';
+import { CustomersService } from '../customers/customers.service';
+import { SellersService } from '../sellers/sellers.service';
 
 interface JwtPayload {
   sub: string;
@@ -24,8 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey:
-        configService.get<string>('JWT_SECRET') || 'jwt_default_secret',
+      secretOrKey: configService.get<string>('jwt.secret') || 'jwt_default_secret',
     });
   }
 

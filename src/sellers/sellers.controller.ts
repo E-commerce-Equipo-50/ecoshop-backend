@@ -2,7 +2,7 @@ import { Body, Controller, Post, ConflictException, UnauthorizedException } from
 import { SellersService } from './sellers.service';
 import { CreateSellerDto } from './dtos/create-seller.dto';
 import { LoginSellerDto } from './dtos/login-seller.dto';
-import { hashPassword, verifyPassword } from 'src/common/utils/hash.utils';
+import { hashPassword, verifyPassword } from '../common/utils/hash.utils';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('marcas')
