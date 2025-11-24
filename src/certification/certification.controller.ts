@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
+  Delete,
   Param,
   Post,
   Request,
@@ -12,6 +14,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CertificationService } from './certification.service';
 import { CreateCertificationDto } from './dto/create-certification.dto';
+import { UpdateCertificationDto } from './dto/update-certification.dto';
 
 @Controller('certificaciones')
 export class CertificationController {
@@ -42,5 +45,41 @@ export class CertificationController {
     const certifications =
       await this.certificationService.listByProduct(productId);
     return { certifications };
+  }
+
+  @Patch(':certificationId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('seller')
+  async update(
+    @Param('certificationId') certificationId: string,
+    @Body() body: UpdateCertificationDto,
+    @Request() req: { user: { id: string } },
+  ) {
+    const cert = await this.certificationService.update(
+      req.user.id,
+      certificationId,
+      body,
+    );
+    return {
+      message: 'Certification updated',
+      certification: {
+        id: cert._id,
+        product: cert.product,
+        type: cert.type,
+        iconUrl: cert.iconUrl,
+        updatedAt: cert.updatedAt,
+      },
+    };
+  }
+
+  @Delete(':certificationId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('seller')
+  async remove(
+    @Param('certificationId') certificationId: string,
+    @Request() req: { user: { id: string } },
+  ) {
+    await this.certificationService.remove(req.user.id, certificationId);
+    return { message: 'Certification removed' };
   }
 }
