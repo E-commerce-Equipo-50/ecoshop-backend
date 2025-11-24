@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ImpactMetric, ImpactMetricSchema } from './impact-metric.schema';
 import { ImpactMetricController } from './impact-metric.controller';
 import { ImpactMetricService } from './impact-metric.service';
-import { ProductModule } from 'src/product/product.module';
+import { ProductModule } from '../product/product.module';
 
 @Module({
   imports: [

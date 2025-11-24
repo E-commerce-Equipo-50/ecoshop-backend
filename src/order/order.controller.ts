@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { OrderService } from './order.service';
-import { Product } from 'src/product/product.schema';
+import { Product } from '../product/product.schema';
 
 type RequestUser = { user: { id: string } };
 

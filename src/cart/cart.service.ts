@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { ProductService } from 'src/product/product.service';
+import { ProductService } from '../product/product.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { Cart } from './cart.schema';
-import { CartItem } from 'src/cart-item/cart-item.schema';
+import { CartItem } from '../cart-item/cart-item.schema';
 
 @Injectable()
 export class CartService {
