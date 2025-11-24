@@ -27,6 +27,9 @@ export class ImpactMetric extends Document {
 
   @Prop()
   createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const ImpactMetricSchema = SchemaFactory.createForClass(ImpactMetric);
