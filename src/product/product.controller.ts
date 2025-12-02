@@ -9,14 +9,24 @@ import {
   UseGuards,
   NotFoundException,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
+import {
+  ApiCreateProductEndpoint,
+  ApiListPublicProductsEndpoint,
+  ApiListMyProductsEndpoint,
+  ApiGetProductEndpoint,
+  ApiUpdateProductEndpoint,
+  ApiDeleteProductEndpoint,
+} from './decorators/swagger-product.decorator';
 import path from 'path';
 
+@ApiTags('Productos')
 @Controller('productos')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -24,6 +34,7 @@ export class ProductController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('seller')
+  @ApiCreateProductEndpoint()
   async create(
     @Body() body: CreateProductDto,
     @Request() req: { user: { id: string } },
@@ -52,6 +63,7 @@ export class ProductController {
   }
 
   @Get()
+  @ApiListPublicProductsEndpoint()
   async listPublic() {
     const products = await this.productService.listActive();
     return { products };
@@ -60,6 +72,7 @@ export class ProductController {
   @Get('mios')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('seller')
+  @ApiListMyProductsEndpoint()
   async listMine(@Request() req: { user: { id: string } }) {
     const products = await this.productService.listBySeller(req.user.id);
     return { products };
@@ -67,6 +80,7 @@ export class ProductController {
 
   //Obtiene un producto
   @Get(':id')
+  @ApiGetProductEndpoint()
   async getOne(@Param('id') id: string) {
     const product = await this.productService.findById(id);
 
@@ -80,6 +94,7 @@ export class ProductController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('seller')
+  @ApiUpdateProductEndpoint()
   async update(
     @Param('id') id: string,
     @Body() body: UpdateProductDto,
@@ -102,6 +117,7 @@ export class ProductController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('seller')
+  @ApiDeleteProductEndpoint()
   async delete(
     @Param('id') id: string,
     @Request() req: { user: { id: string } },
