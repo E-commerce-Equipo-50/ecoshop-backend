@@ -1,11 +1,17 @@
 import { Body, Controller, Post, HttpCode, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CustomersService } from './customers.service';
 import { RegisterAuthDto } from 'src/auth/dto/register-auth.dto';
 import { LoginAuthDto } from 'src/auth/dto/login-auth.dto';
 import { hashPassword, verifyPassword } from 'src/common/utils/hash.utils';
 import { JwtService } from '@nestjs/jwt';
 import { CartService } from 'src/cart/cart.service';
+import {
+  ApiCustomerRegisterEndpoint,
+  ApiCustomerLoginEndpoint,
+} from './decorators/swagger-customer.decorator';
 
+@ApiTags('Clientes')
 @Controller('cliente')
 export class CustomersController {
   constructor(
@@ -15,6 +21,7 @@ export class CustomersController {
   ) {}
 
   @Post('registro')
+  @ApiCustomerRegisterEndpoint()
   async register(@Body() body: RegisterAuthDto) {
     const existing = await this.customersService.findByEmail(body.email);
     if (existing) {
@@ -50,6 +57,7 @@ export class CustomersController {
 
   @Post('login')
   @HttpCode(200)
+  @ApiCustomerLoginEndpoint()
   async login(@Body() body: LoginAuthDto) {
     const user = await this.customersService.findByEmail(body.email);
     if (!user) {

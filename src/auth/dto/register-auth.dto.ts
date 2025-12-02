@@ -11,7 +11,7 @@ import {
 import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-const USER_ROLES = ['admin', 'client'] as const;
+const USER_ROLES = ['client'] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];
 

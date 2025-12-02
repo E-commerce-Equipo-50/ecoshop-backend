@@ -24,7 +24,6 @@ export default registerAs('swagger', () => ({
     customCss: `
       .swagger-ui .topbar { display: none; }
       .swagger-ui .information-container { display: block; }
-      .swagger-ui .scheme-container { display: none; }
     `,
     customCssUrl: 'https://unpkg.com/swagger-ui-dist/swagger-ui.css',
     customJs: [

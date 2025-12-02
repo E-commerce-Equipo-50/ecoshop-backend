@@ -10,7 +10,7 @@ export class Customer extends Document {
   password: string;
 
   @Prop({ default: 'client', enum: ['client', 'admin'] })
-  role: 'client' | 'admin';
+  role: 'client';
 
   @Prop()
   name?: string;

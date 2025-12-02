@@ -6,15 +6,21 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CartService } from './cart.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { Product } from 'src/product/product.schema';
+import {
+  ApiAddToCartEndpoint,
+  ApiGetCartEndpoint,
+} from './decorators/swagger-cart.decorator';
 
 type RequestUser = { user: { id: string } };
 
+@ApiTags('Carrito')
 @Controller('carrito')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CartController {
@@ -22,6 +28,7 @@ export class CartController {
 
   @Post('add')
   @Roles('client')
+  @ApiAddToCartEndpoint()
   async addProduct(
     @Body() body: AddCartItemDto,
     @Request() req: RequestUser,
@@ -54,6 +61,7 @@ export class CartController {
 
   @Get()
   @Roles('client')
+  @ApiGetCartEndpoint()
   async getCart(@Request() req: RequestUser) {
     const { cart, items } = await this.cartService.getCartWithItems(req.user.id);
     const itemsWithProducts = items.map((item) => {

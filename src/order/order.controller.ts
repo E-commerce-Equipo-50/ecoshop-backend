@@ -1,12 +1,18 @@
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { OrderService } from './order.service';
 import { Product } from '../product/product.schema';
+import {
+  ApiCreateOrderEndpoint,
+  ApiListOrdersEndpoint,
+} from './decorators/swagger-order.decorator';
 
 type RequestUser = { user: { id: string } };
 
+@ApiTags('Órdenes')
 @Controller('ordenes')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('client')
@@ -14,6 +20,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
+  @ApiCreateOrderEndpoint()
   async create(@Request() req: RequestUser) {
     const { order, items, impactSummary } =
       await this.orderService.createFromCart(req.user.id);
@@ -49,6 +56,7 @@ export class OrderController {
   }
 
   @Get()
+  @ApiListOrdersEndpoint()
   async list(@Request() req: RequestUser) {
     const orders = await this.orderService.listByCustomer(req.user.id);
 

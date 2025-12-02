@@ -11,7 +11,7 @@ export class CustomersService {
     email: string;
     password: string;
     name?: string;
-    role?: 'client' | 'admin';
+    role?: 'client';
   }): Promise<Customer> {
     const user = new this.customerModel(data);
     return user.save();
