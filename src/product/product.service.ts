@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Product } from './product.schema';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -36,4 +37,28 @@ export class ProductService {
   async findById(id: string): Promise<Product | null> {
     return this.productModel.findById(id).exec();
   }
+  async updateProduct(
+    productId: string,
+    sellerId: string,
+    dto: UpdateProductDto,
+  ): Promise<Product | null> {
+    return this.productModel
+      .findOneAndUpdate(
+        { _id: new Types.ObjectId(productId), seller: new Types.ObjectId(sellerId) },
+        { $set: dto },
+        { new: true }, // Devuelve el documento actualizado
+      )
+      .exec();
+  }
+  async deleteProduct(
+    productId: string,
+    sellerId: string,
+  ): Promise<{ deletedCount: number }> {
+    const result = await this.productModel.deleteOne({
+      _id: new Types.ObjectId(productId),
+      seller: new Types.ObjectId(sellerId),
+    }).exec();
+    return { deletedCount: result.deletedCount };
+  }
+
 }

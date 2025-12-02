@@ -16,6 +16,12 @@ export class ImpactMetric extends Document {
   @Prop({
     required: true,
     enum: ['CO2', 'WATER', 'ENERGY', 'RECYCLED', 'TRANSPORT'],
+     //"type": "CO2", "value": 1.99, "unit": "kg CO2e"},
+  //"type": "WATER", "value": 150, "unit": "L"},
+  //"type": "ENERGY", "value": 3.2, "unit": "kWh"},
+  //type": "RECYCLED", "value": 85, "unit": "%"},
+  //type": "TRANSPORT", "value": 500, "unit": "km"}
+
   })
   type: ImpactMetricType;
 
@@ -27,6 +33,9 @@ export class ImpactMetric extends Document {
 
   @Prop()
   createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const ImpactMetricSchema = SchemaFactory.createForClass(ImpactMetric);

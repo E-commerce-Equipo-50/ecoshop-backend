@@ -4,13 +4,18 @@ import {
   Get,
   Post,
   Request,
+  Delete, Patch,
+  Param,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
+import path from 'path';
 
 @Controller('productos')
 export class ProductController {
@@ -59,4 +64,55 @@ export class ProductController {
     const products = await this.productService.listBySeller(req.user.id);
     return { products };
   }
+
+  //Obtiene un producto
+  @Get(':id')
+  async getOne(@Param('id') id: string) {
+    const product = await this.productService.findById(id);
+
+    if (!product || !product.isActive) {
+      throw new NotFoundException('Product not found or not active');
+    }
+
+    return { product };
+  }
+  //Actualiza un producto.
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('seller')
+  async update(
+    @Param('id') id: string,
+    @Body() body: UpdateProductDto,
+    @Request() req: { user: { id: string } },
+  ) {
+    const updated = await this.productService.updateProduct(
+      id,
+      req.user.id,
+      body,
+    );
+
+    if (!updated) {
+      throw new NotFoundException('Product not found or access denied (not your product)');
+    }
+
+    return { message: 'Product updated successfully', product: updated };
+  }
+
+  //Elimina un producto
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('seller')
+  async delete(
+    @Param('id') id: string,
+    @Request() req: { user: { id: string } },
+  ) {
+    const result = await this.productService.deleteProduct(id, req.user.id);
+
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('Product not found or access denied (not your product)');
+    }
+
+    return { message: 'Product deleted successfully', id };
+  }
+
 }
