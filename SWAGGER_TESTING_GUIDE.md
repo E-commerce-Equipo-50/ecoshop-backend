@@ -6,7 +6,7 @@ Esta guía te ayudará a probar todos los endpoints de la API usando Swagger UI.
 
 1. **Inicia el servidor:**
    ```
-  ----> npm run start
+   npm run start
    ```
 
 2. **Abre Swagger en tu navegador:**
