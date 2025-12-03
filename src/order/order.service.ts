@@ -72,6 +72,9 @@ export class OrderService {
       .find({ product: { $in: [...productIdsObj, ...productIdsRaw] } })
       .exec();
 
+    // Inicializar acumulador de ahorro total de CO₂
+    let totalAhorroCO2 = 0;
+
     const summary =
       metrics.reduce<
         Record<string, { type: ImpactMetricType; unit: string; totalValue: number }>
@@ -83,6 +86,13 @@ export class OrderService {
         if (qty === 0) return acc;
         const key = `${metric.type}-${metric.unit}`;
         const subtotal = metric.value * qty;
+
+        // Calcular el ahorro de CO₂ si existe comparison_value
+        if (metric.type === 'CO2' && metric.comparison_value) {
+          const ahorroUnitario = metric.comparison_value - metric.value;
+          totalAhorroCO2 += ahorroUnitario * qty;
+        }
+
         if (!acc[key]) {
           acc[key] = {
             type: metric.type,
@@ -95,7 +105,18 @@ export class OrderService {
         return acc;
       }, {}) ?? {};
 
-    return Object.values(summary);
+    const result = Object.values(summary);
+
+    // Agregar el ahorro de CO₂ como una métrica adicional si hay ahorro
+    if (totalAhorroCO2 > 0) {
+      result.push({
+        type: 'CO2' as ImpactMetricType,
+        unit: 'kg CO2e ahorrados',
+        totalValue: totalAhorroCO2,
+      });
+    }
+
+    return result;
   }
 
   async createFromCart(customerId: string) {
