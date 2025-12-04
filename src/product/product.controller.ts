@@ -65,8 +65,30 @@ export class ProductController {
   @Get()
   @ApiListPublicProductsEndpoint()
   async listPublic() {
-    const products = await this.productService.listActive();
-    return { products };
+    const productsWithScores = await this.productService.listActiveWithEcoScore();
+    
+    // Formatear respuesta con eco-scores
+    const formattedProducts = productsWithScores.map(({ product, ecoScore }) => ({
+      id: product._id,
+      brand: product.brand,
+      name: product.name,
+      price: product.price,
+      description: product.description,
+      category: product.category,
+      imageUrl: product.imageUrl,
+      stock: product.stock,
+      originCountry: product.originCountry,
+      materials: product.materials,
+      isActive: product.isActive,
+      seller: product.seller,
+      ecoScore: ecoScore ? {
+        score: ecoScore.ecoScore,
+        badge: ecoScore.badge,
+        description: ecoScore.description,
+      } : null,
+    }));
+
+    return { products: formattedProducts };
   }
 
   @Get('mios')
@@ -82,13 +104,36 @@ export class ProductController {
   @Get(':id')
   @ApiGetProductEndpoint()
   async getOne(@Param('id') id: string) {
-    const product = await this.productService.findById(id);
+    const result = await this.productService.findByIdWithEcoScore(id);
 
-    if (!product || !product.isActive) {
+    if (!result || !result.product.isActive) {
       throw new NotFoundException('Product not found or not active');
     }
 
-    return { product };
+    const { product, ecoScore } = result;
+
+    return { 
+      product: {
+        id: product._id,
+        brand: product.brand,
+        name: product.name,
+        price: product.price,
+        description: product.description,
+        category: product.category,
+        imageUrl: product.imageUrl,
+        stock: product.stock,
+        originCountry: product.originCountry,
+        materials: product.materials,
+        isActive: product.isActive,
+        seller: product.seller,
+      },
+      ecoScore: ecoScore ? {
+        score: ecoScore.ecoScore,
+        badge: ecoScore.badge,
+        description: ecoScore.description,
+        metrics: ecoScore.metrics,
+      } : null,
+    };
   }
   //Actualiza un producto.
   @Patch(':id')

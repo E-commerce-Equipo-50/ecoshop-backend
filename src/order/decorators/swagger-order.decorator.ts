@@ -41,10 +41,28 @@ export const ApiCreateOrderEndpoint = () => {
               },
             ],
           },
-          impactSummary: {
-            totalCarbonFootprint: 7.5,
-            totalWaterUsage: 450,
-          },
+          impactSummary: [
+            {
+              type: 'CO2',
+              unit: 'kg CO2e',
+              totalValue: 4.5
+            },
+            {
+              type: 'CO2',
+              unit: 'kg CO2e ahorrados',
+              totalValue: 10.5
+            },
+            {
+              type: 'WATER',
+              unit: 'litros',
+              totalValue: 150
+            },
+            {
+              type: 'WATER',
+              unit: 'litros ahorrados',
+              totalValue: 450
+            }
+          ],
         },
       },
     }),
@@ -95,10 +113,23 @@ export const ApiListOrdersEndpoint = () => {
                   subtotal: 89.97,
                 },
               ],
-              impactSummary: {
-                totalCarbonFootprint: 7.5,
-                totalWaterUsage: 450,
-              },
+              impactSummary: [
+                {
+                  type: 'CO2',
+                  unit: 'kg CO2e',
+                  totalValue: 4.5
+                },
+                {
+                  type: 'CO2',
+                  unit: 'kg CO2e ahorrados',
+                  totalValue: 10.5
+                },
+                {
+                  type: 'WATER',
+                  unit: 'litros',
+                  totalValue: 150
+                }
+              ],
             },
           ],
         },

@@ -25,6 +25,11 @@ export class ImpactMetric extends Document {
   })
   type: ImpactMetricType;
 
+  // Campo NUEVO y crucial: El valor de la métrica del producto NO-sostenible que se está evitando.
+  // Es la base para calcular el AHORRO.
+  @Prop({ type: Number, required: false }) // 'required: false' porque no todos los tipos (ej: RECYCLED_MATERIAL) necesitan comparación.
+  comparison_value?: number;
+
   @Prop({ required: true, min: 0 })
   value: number;
 
