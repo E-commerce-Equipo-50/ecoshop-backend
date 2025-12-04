@@ -12,6 +12,7 @@ import { Product } from '../product/product.schema';
 import { Order } from './order.schema';
 import { OrderItem } from '../order-item/order-item.schema';
 import { ImpactMetric, ImpactMetricType } from '../impact_metric/impact-metric.schema';
+import { calculateEcoScore } from '../common/utils/eco-score.utils';
 
 @Injectable()
 export class OrderService {
@@ -27,6 +28,28 @@ export class OrderService {
     private readonly cartService: CartService,
   ) {}
 
+  /**
+   * Función auxiliar para extraer el ID del producto
+   */
+  private getProductId(product: unknown): string | null {
+    if (product instanceof Types.ObjectId) {
+      return product.toString();
+    }
+    if (typeof product === 'string') {
+      return product;
+    }
+    if (product && typeof product === 'object') {
+      const prodObj = product as { _id?: unknown };
+      if (prodObj._id instanceof Types.ObjectId) {
+        return prodObj._id.toString();
+      }
+      if (typeof prodObj._id === 'string') {
+        return prodObj._id;
+      }
+    }
+    return null;
+  }
+
   private async computeImpactSummary(
     items: OrderItem[],
   ): Promise<
@@ -36,27 +59,8 @@ export class OrderService {
       totalValue: number;
     }>
   > {
-    const getProductId = (product: unknown): string | null => {
-      if (product instanceof Types.ObjectId) {
-        return product.toString();
-      }
-      if (typeof product === 'string') {
-        return product;
-      }
-      if (product && typeof product === 'object') {
-        const prodObj = product as { _id?: unknown };
-        if (prodObj._id instanceof Types.ObjectId) {
-          return prodObj._id.toString();
-        }
-        if (typeof prodObj._id === 'string') {
-          return prodObj._id;
-        }
-      }
-      return null;
-    };
-
     const productQuantityMap = items.reduce<Record<string, number>>((acc, item) => {
-      const productId = getProductId(item.product);
+      const productId = this.getProductId(item.product);
       if (!productId) return acc;
       acc[productId] = (acc[productId] ?? 0) + item.quantity;
       return acc;
@@ -117,6 +121,86 @@ export class OrderService {
     }
 
     return result;
+  }
+
+  /**
+   * Calcula el Eco-Score promedio ponderado de una orden
+   * basado en los productos y sus cantidades
+   */
+  async computeOrderEcoScore(items: OrderItem[]): Promise<{
+    orderEcoScore: number | null;
+    orderBadge: string | null;
+    productScores: Array<{
+      productId: string;
+      productName: string;
+      quantity: number;
+      ecoScore: number;
+      badge: string;
+    }>;
+  }> {
+    const productScores: Array<{
+      productId: string;
+      productName: string;
+      quantity: number;
+      ecoScore: number;
+      badge: string;
+    }> = [];
+    
+    let totalWeightedScore = 0;
+    let totalQuantity = 0;
+
+    for (const item of items) {
+      const productId = this.getProductId(item.product);
+      if (!productId) continue;
+
+      // Obtener métricas del producto
+      const metrics = await this.impactMetricModel.find({
+        product: new Types.ObjectId(productId),
+      }).exec();
+
+      if (metrics.length === 0) continue;
+
+      // Calcular Eco-Score del producto
+      const ecoScoreResult = calculateEcoScore(metrics);
+      
+      // Obtener nombre del producto
+      const product = (item as unknown as { product?: Product }).product;
+      const productName = product?.name || 'Unknown';
+
+      productScores.push({
+        productId,
+        productName,
+        quantity: item.quantity,
+        ecoScore: ecoScoreResult.ecoScore,
+        badge: ecoScoreResult.badge,
+      });
+
+      // Ponderar por cantidad (productos con más cantidad tienen más peso)
+      totalWeightedScore += ecoScoreResult.ecoScore * item.quantity;
+      totalQuantity += item.quantity;
+    }
+
+    // Si no hay productos con eco-score, retornar null
+    if (totalQuantity === 0 || productScores.length === 0) {
+      return {
+        orderEcoScore: null,
+        orderBadge: null,
+        productScores: [],
+      };
+    }
+
+    // Calcular promedio ponderado
+    const orderEcoScore = totalWeightedScore / totalQuantity;
+    
+    // Asignar badge a la orden
+    const { getEcoBadge } = require('../common/utils/eco-score.utils');
+    const badgeInfo = getEcoBadge(orderEcoScore);
+
+    return {
+      orderEcoScore: Math.round(orderEcoScore * 10) / 10,
+      orderBadge: badgeInfo.badge,
+      productScores,
+    };
   }
 
   async createFromCart(customerId: string) {
@@ -182,8 +266,14 @@ export class OrderService {
       .exec();
 
     const impactSummary = await this.computeImpactSummary(orderItems);
+    const orderEcoScoreData = await this.computeOrderEcoScore(orderItems);
 
-    return { order: savedOrder, items: orderItems, impactSummary };
+    return { 
+      order: savedOrder, 
+      items: orderItems, 
+      impactSummary,
+      ecoScore: orderEcoScoreData,
+    };
   }
 
   async listByCustomer(customerId: string) {
@@ -217,7 +307,13 @@ export class OrderService {
         const orderId = String(order._id);
         const orderItems = itemsByOrder[orderId] ?? [];
         const impactSummary = await this.computeImpactSummary(orderItems);
-        return { order, items: orderItems, impactSummary };
+        const orderEcoScoreData = await this.computeOrderEcoScore(orderItems);
+        return { 
+          order, 
+          items: orderItems, 
+          impactSummary,
+          ecoScore: orderEcoScoreData,
+        };
       }),
     );
   }

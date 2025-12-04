@@ -131,7 +131,22 @@ Authorization: Bearer <TOKEN_DEL_VENDEDOR>
 
 ## 🎯 Paso 3: Crear Métricas de Impacto (como Vendedor)
 
-Aquí es donde defines el ahorro de CO₂.
+Aquí es donde defines el ahorro de CO₂ **y otras métricas ambientales**.
+
+### 🆕 Nuevo: Sistema de Eco-Score con Múltiples Métricas
+
+El sistema ahora soporta múltiples métricas para calcular un **Eco-Score compuesto** que te da un badge basado en el impacto general del producto:
+
+- 🌳 **Máximo Impacto Positivo** (80-100 puntos)
+- 🌿 **Bajo Impacto General** (60-79 puntos)
+- 🌱 **Impacto Medio** (40-59 puntos)
+- 🟡 **Impacto Estándar** (0-39 puntos)
+
+**Pesos de métricas:**
+- CO₂: 50%
+- WATER: 30%
+- ENERGY: 15%
+- RECYCLED: 5%
 
 ### Endpoint
 ```
@@ -146,13 +161,72 @@ Authorization: Bearer <TOKEN_DEL_VENDEDOR>
 
 ---
 
-### Body - Métrica para BOXER
+### Body - Métricas Completas para BOXER (Recomendado)
+
+**Métrica 1: CO₂**
 ```json
 {
   "productId": "BOXER_ID",
   "type": "CO2",
   "value": 1.5,
   "comparison_value": 5.0,
+  "unit": "kg CO2e"
+}
+```
+
+**Métrica 2: Agua**
+```json
+{
+  "productId": "BOXER_ID",
+  "type": "WATER",
+  "value": 50,
+  "comparison_value": 200,
+  "unit": "litros"
+}
+```
+
+**Métrica 3: Energía**
+```json
+{
+  "productId": "BOXER_ID",
+  "type": "ENERGY",
+  "value": 2.0,
+  "comparison_value": 8.0,
+  "unit": "kWh"
+}
+```
+
+**Métrica 4: Material Reciclado**
+```json
+{
+  "productId": "BOXER_ID",
+  "type": "RECYCLED",
+  "value": 80,
+  "comparison_value": 100,
+  "unit": "%"
+}
+```
+
+**📊 Cálculo del Eco-Score para el BOXER:**
+```
+CO₂:      Score = 100 - (1.5/5.0 × 100) = 70    → 70 × 0.50 = 35.0
+WATER:    Score = 100 - (50/200 × 100) = 75    → 75 × 0.30 = 22.5
+ENERGY:   Score = 100 - (2.0/8.0 × 100) = 75   → 75 × 0.15 = 11.25
+RECYCLED: Score = (80/100 × 100) = 80          → 80 × 0.05 = 4.0
+                                                  ──────────
+                                        Eco-Score = 72.75
+                                        Badge: 🌿 Bajo Impacto General
+```
+
+---
+
+### Body - Métrica Solo CO₂ para JABÓN (Mínimo)
+```json
+{
+  "productId": "JABON_ID",
+  "type": "CO2",
+  "value": 0.3,
+  "comparison_value": 0.8,
   "unit": "kg CO2e"
 }
 ```
@@ -191,6 +265,29 @@ Authorization: Bearer <TOKEN_DEL_VENDEDOR>
 ```
 
 **📊 Ahorro por unidad:** 1.2 - 0.5 = **0.7 kg CO₂e**
+
+---
+
+### 💡 Importante: Unidades Consistentes
+
+⚠️ **REGLA**: `value` y `comparison_value` deben usar la **misma unidad**.
+
+**✅ Correcto:**
+```json
+{ "value": 50, "comparison_value": 200, "unit": "litros" }
+{ "value": 50, "comparison_value": 200, "unit": "ml" }
+```
+
+**❌ Incorrecto:**
+```json
+{ "value": 50, "comparison_value": 0.2, "unit": "ml" }  // ¡Uno en ml, otro en L!
+```
+
+La fórmula funciona porque usa **proporciones**, no valores absolutos:
+$$\text{Score} = 100 - \left( \frac{50 \text{ ml}}{200 \text{ ml}} \times 100 \right) = 75$$
+
+Es lo mismo que:
+$$\text{Score} = 100 - \left( \frac{0.05 \text{ L}}{0.2 \text{ L}} \times 100 \right) = 75$$
 
 ---
 
@@ -312,9 +409,9 @@ Authorization: Bearer <TOKEN_DEL_CLIENTE>
 
 ---
 
-## 🎉 Paso 7: Ver el Resultado con Ahorro de CO₂
+## 🎉 Paso 7: Ver el Resultado con Ahorro de CO₂ y Eco-Score
 
-### ✅ Respuesta Esperada
+### ✅ Respuesta Esperada (Nueva con Eco-Score)
 
 ```json
 {
@@ -362,8 +459,45 @@ Authorization: Bearer <TOKEN_DEL_CLIENTE>
       "type": "CO2",
       "unit": "kg CO2e ahorrados",
       "totalValue": 4.9
+    },
+    {
+      "type": "WATER",
+      "unit": "litros",
+      "totalValue": 50
+    },
+    {
+      "type": "ENERGY",
+      "unit": "kWh",
+      "totalValue": 2.0
     }
-  ]
+  ],
+  "ecoScore": {
+    "orderEcoScore": 72.8,
+    "orderBadge": "🌿 Bajo Impacto General",
+    "productScores": [
+      {
+        "productId": "BOXER_ID",
+        "productName": "Boxer Ecológico",
+        "quantity": 1,
+        "ecoScore": 72.75,
+        "badge": "🌿 Bajo Impacto General"
+      },
+      {
+        "productId": "JABON_ID",
+        "productName": "Jabón Natural",
+        "quantity": 1,
+        "ecoScore": 62.5,
+        "badge": "🌿 Bajo Impacto General"
+      },
+      {
+        "productId": "CREMA_ID",
+        "productName": "Crema Facial Orgánica",
+        "quantity": 2,
+        "ecoScore": 58.3,
+        "badge": "🌱 Impacto Medio"
+      }
+    ]
+  }
 }
 ```
 
@@ -389,9 +523,130 @@ CREMA:  (1.2 - 0.5) × 2 = 1.4 kg
 TOTAL AHORRADO:         4.9 kg CO₂e
 ```
 
+### 🆕 Eco-Score de la Orden (72.8)
+
+El Eco-Score de la orden se calcula como un **promedio ponderado** de los Eco-Scores de cada producto, donde los productos con mayor cantidad tienen más peso:
+
+```
+Eco-Score Orden = (Score₁ × Qty₁ + Score₂ × Qty₂ + ...) / Total Qty
+
+BOXER:  72.75 × 1 = 72.75
+JABÓN:  62.50 × 1 = 62.50
+CREMA:  58.30 × 2 = 116.60
+──────────────────────────
+TOTAL:          251.85 / (1+1+2) = 72.8
+Badge: 🌿 Bajo Impacto General
+```
+
 ---
 
-## 🎯 Paso 8 (Opcional): Ver Todas las Órdenes del Cliente
+## 🎯 Paso 8: Ver Producto Individual con Eco-Score
+
+### Endpoint
+```
+GET http://localhost:3000/api/productos/BOXER_ID
+```
+
+### ✅ Respuesta con Eco-Score Detallado
+```json
+{
+  "product": {
+    "id": "BOXER_ID",
+    "name": "Boxer Ecológico",
+    "price": 25.99,
+    "description": "Fabricado con algodón reciclado",
+    "category": "Ropa Interior",
+    ...
+  },
+  "ecoScore": {
+    "score": 72.75,
+    "badge": "🌿 Bajo Impacto General",
+    "description": "Producto sostenible con impacto reducido",
+    "metrics": [
+      {
+        "type": "CO2",
+        "value": 1.5,
+        "comparisonValue": 5.0,
+        "unit": "kg CO2e",
+        "score": 70.0,
+        "weight": 50,
+        "contribution": 35.0
+      },
+      {
+        "type": "WATER",
+        "value": 50,
+        "comparisonValue": 200,
+        "unit": "litros",
+        "score": 75.0,
+        "weight": 30,
+        "contribution": 22.5
+      },
+      {
+        "type": "ENERGY",
+        "value": 2.0,
+        "comparisonValue": 8.0,
+        "unit": "kWh",
+        "score": 75.0,
+        "weight": 15,
+        "contribution": 11.25
+      },
+      {
+        "type": "RECYCLED",
+        "value": 80,
+        "comparisonValue": 100,
+        "unit": "%",
+        "score": 80.0,
+        "weight": 5,
+        "contribution": 4.0
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 🎯 Paso 9: Listar Todos los Productos con Eco-Scores
+
+### Endpoint
+```
+GET http://localhost:3000/api/productos
+```
+
+### ✅ Respuesta
+```json
+{
+  "products": [
+    {
+      "id": "BOXER_ID",
+      "name": "Boxer Ecológico",
+      "price": 25.99,
+      ...
+      "ecoScore": {
+        "score": 72.75,
+        "badge": "🌿 Bajo Impacto General",
+        "description": "Producto sostenible con impacto reducido"
+      }
+    },
+    {
+      "id": "JABON_ID",
+      "name": "Jabón Natural",
+      "price": 8.50,
+      ...
+      "ecoScore": {
+        "score": 62.5,
+        "badge": "🌿 Bajo Impacto General",
+        "description": "Producto sostenible con impacto reducido"
+      }
+    },
+    ...
+  ]
+}
+```
+
+---
+
+## 🎯 Paso 10 (Opcional): Ver Todas las Órdenes del Cliente
 
 ### Endpoint
 ```
@@ -404,17 +659,38 @@ Authorization: Bearer <TOKEN_DEL_CLIENTE>
 ```
 
 ### ✅ Respuesta
-Verás un array con todas las órdenes, cada una con su `impactSummary` y ahorro de CO₂.
+Verás un array con todas las órdenes, cada una con su `impactSummary`, `ecoScore` y ahorro de CO₂.
 
 ---
 
-## 🌍 Mensaje Final para el Frontend
+## 🌍 Mensajes para el Frontend
 
-Usa el campo `impactSummary` con `unit: "kg CO2e ahorrados"` para mostrar:
+### Mostrar Ahorro de CO₂
+Usa el campo `impactSummary` con `unit: "kg CO2e ahorrados"`:
 
 ```
 🌱 ¡Tu compra evitó 4.9 kg de CO₂!
    Gracias por elegir productos sostenibles.
+```
+
+### Mostrar Eco-Score de la Orden
+Usa el campo `ecoScore.orderBadge` y `ecoScore.orderEcoScore`:
+
+```
+🌿 Tu orden tiene un Bajo Impacto General
+   Eco-Score: 72.8/100
+```
+
+### Mostrar Badge de Producto
+En el listado de productos, usa `ecoScore.badge`:
+
+```
+┌─────────────────────────────┐
+│ Boxer Ecológico             │
+│ $25.99                      │
+│ 🌿 Bajo Impacto General     │
+│ Score: 72.8/100             │
+└─────────────────────────────┘
 ```
 
 ---
@@ -434,6 +710,16 @@ Usa el campo `impactSummary` con `unit: "kg CO2e ahorrados"` para mostrar:
 - Asegúrate de que `type: "CO2"` esté en las métricas
 - El ahorro solo aparece si `comparison_value > value`
 
+### ❌ No veo el Eco-Score
+- Verifica que el producto tenga al menos una métrica con `comparison_value`
+- El Eco-Score se calcula automáticamente al obtener el producto
+- Si un producto no tiene métricas, `ecoScore` será `null`
+
+### ❌ Eco-Score incorrecto
+- Verifica que `value` y `comparison_value` usen la **misma unidad**
+- Para métricas RECYCLED, mayor `value` es mejor
+- Para otras métricas (CO2, WATER, ENERGY), menor `value` es mejor
+
 ### ❌ Error 401 Unauthorized
 - Verifica que el token sea válido
 - Asegúrate de usar `Bearer` antes del token
@@ -441,23 +727,54 @@ Usa el campo `impactSummary` con `unit: "kg CO2e ahorrados"` para mostrar:
 
 ---
 
-## 📝 Resumen de Endpoints Usados
+## 📝 Resumen de Endpoints
 
+### Endpoints Existentes (Actualizados)
 1. `POST /api/marcas/registro` - Crear vendedor
-2. `POST /api/product` - Crear productos (3 veces)
-3. `POST /api/impact-metric` - Crear métricas (3 veces)
+2. `POST /api/product` - Crear productos
+3. `POST /api/impact-metric` - Crear métricas (ahora soporta CO2, WATER, ENERGY, RECYCLED)
 4. `POST /api/cliente/registro` - Crear cliente
-5. `POST /api/cart/items` - Agregar al carrito (3 veces)
-6. `POST /api/order/from-cart` - Crear orden
-7. `GET /api/order/customer` - Ver órdenes
+5. `POST /api/cart/items` - Agregar al carrito
+6. `POST /api/order/from-cart` - Crear orden (ahora incluye `ecoScore`)
+7. `GET /api/order/customer` - Ver órdenes (ahora incluye `ecoScore`)
+
+### 🆕 Endpoints con Eco-Score Automático
+8. `GET /api/productos` - Listar productos (incluye `ecoScore` resumido)
+9. `GET /api/productos/:id` - Ver producto individual (incluye `ecoScore` detallado con métricas)
 
 ---
 
 ## 🎓 Conceptos Clave
 
+### Sistema Original (CO₂)
 - **value**: CO₂ que genera tu producto eco
 - **comparison_value**: CO₂ que genera el producto estándar
 - **Ahorro**: `comparison_value - value`
 - **Total Ahorrado**: Suma de ahorros de todos los productos × cantidades
 
-¡Listo! Ahora tienes un sistema completo de ahorro de CO₂. 🌱
+### 🆕 Nuevo Sistema (Eco-Score)
+- **Eco-Score**: Puntuación compuesta (0-100) basada en múltiples métricas
+- **Pesos**: CO₂ (50%), WATER (30%), ENERGY (15%), RECYCLED (5%)
+- **Normalización**: Cada métrica se convierte a una escala de 0-100
+- **Badge**: Clasificación visual basada en umbrales:
+  - 🌳 Máximo Impacto Positivo (80-100)
+  - 🌿 Bajo Impacto General (60-79)
+  - 🌱 Impacto Medio (40-59)
+  - 🟡 Impacto Estándar (0-39)
+- **Orden Eco-Score**: Promedio ponderado por cantidad de productos
+
+### Fórmulas Clave
+
+**Score de Métrica Normal (CO₂, WATER, ENERGY):**
+$$\text{Score} = 100 - \left( \frac{\text{value}}{\text{comparison\_value}} \times 100 \right)$$
+
+**Score de Métrica Inversa (RECYCLED):**
+$$\text{Score} = \frac{\text{value}}{\text{comparison\_value}} \times 100$$
+
+**Eco-Score Compuesto:**
+$$\text{Eco-Score} = \sum (\text{Score}_i \times \text{Peso}_i)$$
+
+**Eco-Score de Orden:**
+$$\text{Eco-Score Orden} = \frac{\sum (\text{Eco-Score}_i \times \text{Cantidad}_i)}{\sum \text{Cantidad}_i}$$
+
+¡Listo! Ahora tienes un sistema completo de Eco-Score con badges y múltiples métricas ambientales. 🌱✨
