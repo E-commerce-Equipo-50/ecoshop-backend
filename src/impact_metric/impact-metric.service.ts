@@ -35,6 +35,7 @@ export class ImpactMetricService {
       product: new Types.ObjectId(dto.productId),
       type: dto.type,
       value: dto.value,
+      comparison_value: dto.comparison_value,
       unit: dto.unit,
     });
     return metric.save();
@@ -78,6 +79,7 @@ export class ImpactMetricService {
 
     if (dto.type !== undefined) metric.type = dto.type;
     if (dto.value !== undefined) metric.value = dto.value;
+    if (dto.comparison_value !== undefined) metric.comparison_value = dto.comparison_value;
     if (dto.unit !== undefined) metric.unit = dto.unit;
 
     return metric.save();

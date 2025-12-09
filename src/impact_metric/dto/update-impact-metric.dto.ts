@@ -11,6 +11,11 @@ export class UpdateImpactMetricDto {
   @IsOptional()
   value?: number;
 
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  comparison_value?: number;
+
   @IsString()
   @MaxLength(50)
   @IsOptional()
