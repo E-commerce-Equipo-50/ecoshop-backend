@@ -16,7 +16,7 @@ export class Product extends Document {
   @Prop({ required: true, min: 0 })
   price: number;
 
-  @Prop({ trim: true, uppercase: true })
+  @Prop({ trim: true })
   category?: string;
 
   @Prop({ trim: true })
