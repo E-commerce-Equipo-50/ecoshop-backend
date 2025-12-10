@@ -13,7 +13,7 @@ export class CreateCertificationDto {
   productId: string;
 
   @Transform(({ value }) =>
-    typeof value === 'string' ? value.trim().toUpperCase() : value,
+    typeof value === 'string' ? value.trim() : value,
   )
   @IsIn(CERT_TYPES)
   type: CertificationType;

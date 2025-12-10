@@ -4,7 +4,7 @@ import { Document, Types } from 'mongoose';
 @Schema({ timestamps: true })
 export class Product extends Document {
   // Marca (nombre comercial del seller)
-  @Prop({ required: true, trim: true, uppercase: true })
+  @Prop({ required: true, trim: true })
   brand: string;
 
   @Prop({ required: true, trim: true })

@@ -13,14 +13,11 @@ import { Transform } from 'class-transformer';
 
 export class CreateProductDto {
   @Transform(({ value }) =>
-    typeof value === 'string' ? value.trim().toUpperCase() : value,
+    typeof value === 'string' ? value.trim() : value,
   )
   @IsString()
   @MinLength(2)
   @MaxLength(100)
-  @Matches(/^[A-Z0-9\s\-]+$/, {
-    message: 'brand must be uppercase and can include letters, numbers, spaces, or hyphens',
-  })
   brand: string;
 
   @IsString()
@@ -38,14 +35,11 @@ export class CreateProductDto {
   price: number;
 
   @Transform(({ value }) =>
-    typeof value === 'string' ? value.trim().toUpperCase() : value,
+    typeof value === 'string' ? value.trim() : value,
   )
   @IsOptional()
   @IsString()
   @MaxLength(80)
-  @Matches(/^[A-Z0-9\s\-]+$/, {
-    message: 'category must be uppercase and can include letters, numbers, spaces, or hyphens',
-  })
   category?: string;
 
   @IsOptional()
