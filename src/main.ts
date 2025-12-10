@@ -8,8 +8,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  app.setGlobalPrefix(configService.get<string>('app.apiPrefix') || 'api');
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -25,6 +23,12 @@ async function bootstrap() {
     optionsSuccessStatus: 200,
   });
 
+  // Establecer el prefijo global ANTES de configurar Swagger
+  app.setGlobalPrefix(configService.get<string>('app.apiPrefix') || 'api', {
+    exclude: ['health'],
+  });
+
+  // Configurar Swagger DESPUÉS del prefijo global
   const swaggerConf = configService.get('swagger');
   const config = new DocumentBuilder()
     .setTitle(swaggerConf.title)

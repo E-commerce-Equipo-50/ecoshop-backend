@@ -19,6 +19,9 @@ export class Certification extends Document {
 
   @Prop()
   createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const CertificationSchema = SchemaFactory.createForClass(Certification);

@@ -1,10 +1,16 @@
 import { Body, Controller, Post, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { SellersService } from './sellers.service';
 import { CreateSellerDto } from './dtos/create-seller.dto';
 import { LoginSellerDto } from './dtos/login-seller.dto';
 import { hashPassword, verifyPassword } from '../common/utils/hash.utils';
 import { JwtService } from '@nestjs/jwt';
+import {
+  ApiSellerRegisterEndpoint,
+  ApiSellerLoginEndpoint,
+} from './decorators/swagger-seller.decorator';
 
+@ApiTags('Vendedores/Marcas')
 @Controller('marcas')
 export class SellersController {
   constructor(
@@ -13,6 +19,7 @@ export class SellersController {
   ) {}
 
   @Post('registro')
+  @ApiSellerRegisterEndpoint()
   async register(@Body() body: CreateSellerDto) {
     const existing = await this.sellersService.findByEmail(body.email);
     if (existing) {
@@ -42,6 +49,7 @@ export class SellersController {
   }
 
   @Post('login')
+  @ApiSellerLoginEndpoint()
   async login(@Body() body: LoginSellerDto) {
     const seller = await this.sellersService.findByEmail(body.email);
     if (!seller) {

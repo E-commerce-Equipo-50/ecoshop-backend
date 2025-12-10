@@ -104,35 +104,3 @@ export const ApiProfileEndpoint = () => {
     }),
   );
 };
-
-export const ApiAdminDashboardEndpoint = () => {
-  return applyDecorators(
-    ApiBearerAuth(),
-    ApiOperation({
-      summary: 'Panel de administrador',
-      description: 'Endpoint protegido solo accesible para usuarios con rol de administrador.',
-    }),
-    ApiResponse({
-      status: 200,
-      description: 'Acceso permitido al panel de administrador',
-      schema: {
-        example: {
-          message: 'Welcome, admin',
-        },
-      },
-    }),
-    ApiUnauthorizedResponse({
-      description: 'Token JWT inválido o expirado',
-    }),
-    ApiForbiddenResponse({
-      description: 'Usuario no tiene permisos de administrador',
-      schema: {
-        example: {
-          statusCode: 403,
-          message: 'Forbidden resource',
-          error: 'Forbidden',
-        },
-      },
-    }),
-  );
-};
