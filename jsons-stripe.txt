@@ -1,0 +1,24 @@
+/api/stripe/create-checkout-session
+
+{
+  "items": [
+    {
+      "name": "Test product",
+      "unit_amount": 1000,
+      "quantity": 1,
+      "currency": "eur"
+    }
+  ],
+  "successUrl": "http://localhost:8080/success",
+  "cancelUrl": "http://localhost:8080/cancel",
+  "orderId": "local-123",
+  "customerEmail": "test@example.com"
+}
+
+/api/stripe/create-payment-intent
+
+{
+    "amount": 1500,
+    "currency": "eur",
+    "metadata": { "orderId": "local-123" }
+  }

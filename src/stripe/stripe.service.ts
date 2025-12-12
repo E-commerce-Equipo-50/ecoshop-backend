@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { PaymentsService } from '../payments/payments.service'; // Ajusta la ruta si tu PaymentsService está en otro sitio
+import { OrderService } from 'src/order/order.service';
 
 @Injectable()
 export class StripeService {
@@ -13,9 +14,12 @@ export class StripeService {
   constructor(
     private readonly http: HttpService,
     private readonly paymentsService: PaymentsService, // inyectado
+    private readonly orderService: OrderService,
+
   ) {
     const apiKey = process.env.STRIPE_SECRET_KEY || '';
     const apiVersion = process.env.STRIPE_API_VERSION || '2022-11-15';
+
 
     if (!apiKey) {
       this.logger.warn(
@@ -135,6 +139,17 @@ export class StripeService {
         // 4) si OK, marcar local payment como succeeded
         await this.paymentsService.markSucceeded(stripeId, { amount, currency, raw: rawEvent });
         this.logger.log(`Order ${orderId} marked paid in ECOSHOP and local payment updated.`);
+
+        await this.paymentsService.markSucceeded(stripeId, { amount, currency, raw: rawEvent });
+        this.logger.log(`Payment ${stripeId} marked locally as succeeded.`);
+
+        // NOTIFICAR/ACTUALIZAR LA ORDEN LOCAL
+        try {
+          await this.orderService.markOrderAsPaid(orderId, { stripeId, amount });
+          this.logger.log(`Order ${orderId} updated to paid.`);
+        } catch (err: any) {
+          this.logger.warn(`Unable to update order ${orderId}: ${err?.message || err}`);
+        }
         return resp.data;
       } catch (err: any) {
         this.logger.error(`Error calling ${url}: ${err?.message || err}`);
