@@ -11,6 +11,8 @@ import { CertificationModule } from './certification/certification.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import configurations from './config';
+import { PaymentsModule } from './payments/payments.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import configurations from './config';
     CertificationModule,
     CartModule,
     OrderModule,
+    PaymentsModule,
+    StripeModule,
   ],
   controllers: [HealthController],
   providers: [],

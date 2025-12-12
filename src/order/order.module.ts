@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Cart, CartSchema } from '../cart/cart.schema';
 import { CartItem, CartItemSchema } from '../cart-item/cart-item.schema';
@@ -11,6 +11,8 @@ import {
   ImpactMetric,
   ImpactMetricSchema,
 } from '../impact_metric/impact-metric.schema';
+import { PaymentsModule } from '../payments/payments.module';
+import { StripeModule } from '../stripe/stripe.module';
 
 @Module({
   imports: [
@@ -22,8 +24,11 @@ import {
       { name: ImpactMetric.name, schema: ImpactMetricSchema },
     ]),
     CartModule,
+    PaymentsModule,
+    forwardRef(() => StripeModule),
   ],
   controllers: [OrderController],
   providers: [OrderService],
+  exports: [OrderService],
 })
 export class OrderModule {}

@@ -26,7 +26,7 @@ export class OrderService {
     @InjectModel(ImpactMetric.name)
     private readonly impactMetricModel: Model<ImpactMetric>,
     private readonly cartService: CartService,
-  ) {}
+  ) { }
 
   /**
    * Función auxiliar para extraer el ID del producto
@@ -145,7 +145,7 @@ export class OrderService {
       ecoScore: number;
       badge: string;
     }> = [];
-    
+
     let totalWeightedScore = 0;
     let totalQuantity = 0;
 
@@ -162,7 +162,7 @@ export class OrderService {
 
       // Calcular Eco-Score del producto
       const ecoScoreResult = calculateEcoScore(metrics);
-      
+
       // Obtener nombre del producto
       const product = (item as unknown as { product?: Product }).product;
       const productName = product?.name || 'Unknown';
@@ -191,7 +191,7 @@ export class OrderService {
 
     // Calcular promedio ponderado
     const orderEcoScore = totalWeightedScore / totalQuantity;
-    
+
     // Asignar badge a la orden
     const { getEcoBadge } = require('../common/utils/eco-score.utils');
     const badgeInfo = getEcoBadge(orderEcoScore);
@@ -268,9 +268,9 @@ export class OrderService {
     const impactSummary = await this.computeImpactSummary(orderItems);
     const orderEcoScoreData = await this.computeOrderEcoScore(orderItems);
 
-    return { 
-      order: savedOrder, 
-      items: orderItems, 
+    return {
+      order: savedOrder,
+      items: orderItems,
       impactSummary,
       ecoScore: orderEcoScoreData,
     };
@@ -308,13 +308,44 @@ export class OrderService {
         const orderItems = itemsByOrder[orderId] ?? [];
         const impactSummary = await this.computeImpactSummary(orderItems);
         const orderEcoScoreData = await this.computeOrderEcoScore(orderItems);
-        return { 
-          order, 
-          items: orderItems, 
+        return {
+          order,
+          items: orderItems,
           impactSummary,
           ecoScore: orderEcoScoreData,
         };
       }),
     );
   }
+
+  /**
+ * Actualiza el estado de una orden. Retorna la orden actualizada.
+ */
+  async updateStatus(orderId: string, status: string) {
+    const oid = Types.ObjectId.isValid(orderId) ? new Types.ObjectId(orderId) : orderId;
+    const updated = await this.orderModel.findByIdAndUpdate(
+      oid,
+      { status },
+      { new: true }
+    ).exec();
+
+    if (!updated) {
+      throw new NotFoundException(`Order ${orderId} not found`);
+    }
+    return updated;
+  }
+
+  /**
+   * Marca la orden como pagada y guarda la referencia de pago si se proporciona.
+   */
+  async markOrderAsPaid(orderId: string, paymentRef?: { stripeId?: string; amount?: number }) {
+    const update: any = { status: 'paid' };
+    if (paymentRef?.stripeId) update.stripeId = paymentRef.stripeId;
+    if (paymentRef?.amount) update.paidAmount = paymentRef.amount / 100; // si guardas en euros
+    const oid = Types.ObjectId.isValid(orderId) ? new Types.ObjectId(orderId) : orderId;
+    const updated = await this.orderModel.findByIdAndUpdate(oid, { $set: update }, { new: true }).exec();
+    if (!updated) throw new NotFoundException(`Order ${orderId} not found`);
+    return updated;
+  }
+
 }
